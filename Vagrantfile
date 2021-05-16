@@ -7,21 +7,6 @@ Vagrant.configure(2) do |config|
 
   #config.vm.provision "shell", path: "bootstrap.sh"
 
-  # Master Server
-  config.vm.define "master" do |master|
-    master.vm.box = "ubuntu/xenial64"
-    master.vm.hostname = "master.example.com"
-    master.vm.network "private_network", ip: "172.42.42.100"
-    master.vm.provider "virtualbox" do |v|
-      v.name = "master"
-      v.memory = 1024
-      v.cpus = 2
-    end
-    master.vm.provision "shell", path: "master.sh"
-    master.vm.synced_folder "./masterInput", "/home/vagrant/input"
-    master.vm.synced_folder "./masterOutput", "/home/vagrant/output"
-  end
-
   NodeCount = 3
 
   # Worker Nodes
@@ -37,6 +22,22 @@ Vagrant.configure(2) do |config|
       end
       workernode.vm.provision "shell", path: "worker.sh"
     end
+  end
+
+  # Master Server
+  config.vm.define "master" do |master|
+    master.vm.box = "ubuntu/xenial64"
+    master.vm.hostname = "master.example.com"
+    master.vm.network "private_network", ip: "172.42.42.100"
+    master.vm.provider "virtualbox" do |v|
+      v.name = "master"
+      v.memory = 1024
+      v.cpus = 2
+    end
+    master.vm.provision "shell", path: "master.sh"
+    master.vm.provision "file", source: "master.go", destination: "/home/vagrant/master.go"
+    master.vm.synced_folder "./masterInput", "/home/vagrant/masterInput"
+    master.vm.synced_folder "./masterOutput", "/home/vagrant/masterOutput"
   end
 
 end
