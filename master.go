@@ -5,9 +5,9 @@ import (
 	"io/ioutil"
 	"log"
 	"os/exec"
+	"runtime"
 	"strconv"
 	"sync"
-	"time"
 )
 
 var wg sync.WaitGroup
@@ -30,13 +30,16 @@ func copyFileToNode(filename, dest string) {
 
 	cmd := exec.Command(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7)
 
-	//fmt.Println(cmd.String())
-	err := cmd.Run()
-
-	if err != nil {
-		println(err.Error())
-		return
+	//do-while in golang :'(
+	for {
+		err := cmd.Run()
+		if err == nil {
+			break
+		} else {
+			fmt.Println(err.Error())
+		}
 	}
+
 }
 
 func main() {
@@ -48,9 +51,9 @@ func main() {
 	}
 
 	nodeNumber := 1
-
+	wg.Add(len(files))
 	for _, f := range files {
-		wg.Add(1)
+
 		filename := "./masterInput/" + f.Name()
 
 		if nodeNumber == 4 {
@@ -62,9 +65,16 @@ func main() {
 		nodeNumber++
 
 		go copyFileToNode(filename, dest)
-		time.Sleep(50 * time.Millisecond)
+
+	}
+	fmt.Printf("Numero de goroutines: %d\n", runtime.NumGoroutine())
+
+	for {
+		if runtime.NumGoroutine() == 1 {
+			//time.Sleep(time.Millisecond)
+			wg.Wait()
+			break
+		}
 	}
 	fmt.Println("Finalizado!")
-	wg.Wait()
-
 }
