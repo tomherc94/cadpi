@@ -10,10 +10,8 @@ import (
 	"sync"
 )
 
-var wg sync.WaitGroup
-
 //Copia uma imagem para um nó
-func copyFileToNode(filename, dest string) {
+func copyFileToNode(filename, dest string, wg *sync.WaitGroup) {
 
 	defer wg.Done()
 
@@ -32,17 +30,21 @@ func copyFileToNode(filename, dest string) {
 
 	//do-while in golang :'(
 	for {
-		err := cmd.Run()
-		if err == nil {
-			break
+		err := cmd.Start()
+		if err != nil {
+			log.Fatal(err)
 		} else {
-			fmt.Println(err.Error())
+			err = cmd.Wait()
+			break
 		}
+		err = cmd.Wait()
 	}
 
 }
 
 func main() {
+
+	var wg sync.WaitGroup
 
 	//read images
 	files, err := ioutil.ReadDir("./masterInput")
@@ -51,8 +53,9 @@ func main() {
 	}
 
 	nodeNumber := 1
-	wg.Add(len(files))
+
 	for _, f := range files {
+		wg.Add(1)
 
 		filename := "./masterInput/" + f.Name()
 
@@ -64,17 +67,12 @@ func main() {
 
 		nodeNumber++
 
-		go copyFileToNode(filename, dest)
+		go copyFileToNode(filename, dest, &wg)
 
 	}
 	fmt.Printf("Numero de goroutines: %d\n", runtime.NumGoroutine())
 
-	for {
-		if runtime.NumGoroutine() == 1 {
-			//time.Sleep(time.Millisecond)
-			wg.Wait()
-			break
-		}
-	}
+	wg.Wait()
+
 	fmt.Println("Finalizado!")
 }
