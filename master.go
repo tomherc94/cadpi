@@ -8,10 +8,11 @@ import (
 	"runtime"
 	"strconv"
 	"sync"
+	"time"
 )
 
 //Copia uma imagem para um nó
-func copyFileToNode(filename, dest string, wg *sync.WaitGroup) {
+func copyFileToNode(filename, dest string, wg *sync.WaitGroup, channel chan int, nodeNumber int) {
 
 	defer wg.Done()
 
@@ -35,6 +36,7 @@ func copyFileToNode(filename, dest string, wg *sync.WaitGroup) {
 			log.Fatal(err)
 		} else {
 			err = cmd.Wait()
+			channel <- nodeNumber
 			break
 		}
 		err = cmd.Wait()
@@ -44,6 +46,12 @@ func copyFileToNode(filename, dest string, wg *sync.WaitGroup) {
 
 func main() {
 
+	channel := make(chan int, 6)
+
+	channel <- 1
+	channel <- 2
+	channel <- 3
+
 	var wg sync.WaitGroup
 
 	//read images
@@ -52,27 +60,50 @@ func main() {
 		log.Fatal(err)
 	}
 
-	nodeNumber := 1
+	var nodeNumber int
 
+	//exercutar as goroutines de acordo com o buffer channel
 	for _, f := range files {
 		wg.Add(1)
 
 		filename := "./masterInput/" + f.Name()
 
-		if nodeNumber == 4 {
-			nodeNumber = 1
-		}
+		nodeNumber = <-channel
 
 		dest := "172.42.42.10" + strconv.Itoa(nodeNumber)
 
-		nodeNumber++
-
-		go copyFileToNode(filename, dest, &wg)
+		fmt.Println(filename + " -> " + dest)
+		go copyFileToNode(filename, dest, &wg, channel, nodeNumber)
 
 	}
-	fmt.Printf("Numero de goroutines: %d\n", runtime.NumGoroutine())
 
 	wg.Wait()
+	fmt.Printf("Numero de goroutines: %d\n", runtime.NumGoroutine())
+
+	//executar remotamente aplicativo JAVA em cada Worker
+	for i := 1; i <= 3; i++ {
+		dest := "172.42.42.10" + strconv.Itoa(i)
+
+		arg0 := "sshpass"
+		arg1 := "-p"
+		arg2 := "123"
+
+		arg3 := "ssh"
+		arg4 := "-o"
+		arg5 := "StrictHostKeyChecking=no"
+		arg6 := "root@" + dest
+		arg7 := "'java -jar -Xmx1024m workerApp.jar'"
+
+		cmd := exec.Command(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7)
+
+		err := cmd.Start()
+		if err != nil {
+			log.Fatal(err)
+		}
+		err = cmd.Wait()
+		time.Sleep(3 * time.Second)
+
+	}
 
 	fmt.Println("Finalizado!")
 }
