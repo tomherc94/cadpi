@@ -20,8 +20,11 @@ Vagrant.configure(2) do |config|
         v.memory = 1024
         v.cpus = 1
       end
-      workernode.vm.provision "shell", path: "worker.sh"
       workernode.vm.provision "file", source: "workerApp.jar", destination: "/home/vagrant/workerApp.jar"
+      workernode.vm.provision "file", source: "workerCopy.jar", destination: "/home/vagrant/workerCopy.jar"
+      workernode.vm.provision "file", source: "executeWorkerApp.sh", destination: "/home/vagrant/executeWorkerApp.sh"
+      workernode.vm.provision "file", source: "executeWorkerCopy.sh", destination: "/home/vagrant/executeWorkerCopy.sh"
+      workernode.vm.provision "shell", path: "worker.sh"
     end
   end
 

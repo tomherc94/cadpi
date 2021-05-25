@@ -4,6 +4,10 @@ mkdir /home/vagrant/workerInput
 mkdir /home/vagrant/workerOutput
 sudo chmod 777 workerInput
 sudo chmod 777 workerOutput
+sudo chmod 777 workerApp.jar
+sudo chmod 777 workerCopy.jar
+sudo chmod 777 executeWorkerApp.sh
+sudo chmod 777 executeWorkerCopy.sh
 
 #instalar dependências
 sudo apt-get update
