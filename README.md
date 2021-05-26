@@ -1,14 +1,13 @@
-# cadpi
-Cluster de Alto Desempenho para Processamento de Imagens
+<h1>Cluster de Alto Desempenho para Processamento de Imagens (CADPI)</h1>
 
-Instalar dependências:
+<b>Instalar dependências:</b>
 
 $sudo apt-get install virtualbox
 
 $sudo apt-get install vagrant
 
 
-Executar CADPI:
+<b>Executar CADPI:</b>
 
 $vagrant up
 
