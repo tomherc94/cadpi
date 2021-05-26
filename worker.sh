@@ -8,6 +8,7 @@ sudo chmod 777 workerApp.jar
 sudo chmod 777 workerCopy.jar
 sudo chmod 777 executeWorkerApp.sh
 sudo chmod 777 executeWorkerCopy.sh
+sudo chmod 777 clearWorker.sh
 
 #instalar dependências
 sudo apt-get update

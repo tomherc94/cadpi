@@ -71,7 +71,7 @@ func workerApp(dest string, wgJava *sync.WaitGroup, channelJava chan int, nodeNu
 
 }
 
-func workerCopy(dest string, wgCopy *sync.WaitGroup, channelCopy chan int) {
+func workerCopy(dest string, wgCopy *sync.WaitGroup) {
 	defer wgCopy.Done()
 
 	arg0 := "sshpass"
@@ -92,7 +92,32 @@ func workerCopy(dest string, wgCopy *sync.WaitGroup, channelCopy chan int) {
 	if errCmd != nil {
 		fmt.Println(errCmd)
 	}
-	channelCopy <- 1
+
+	//err = cmd.Wait()
+
+}
+
+func clearWorker(dest string, wgCopy *sync.WaitGroup) {
+	defer wgCopy.Done()
+
+	arg0 := "sshpass"
+	arg1 := "-p"
+	arg2 := "123"
+
+	arg3 := "/usr/bin/ssh"
+	//arg4 := "-o"
+	//arg5 := "StrictHostKeyChecking=no"
+	arg6 := "root@" + dest
+	arg7 := "/home/vagrant/clearWorker.sh"
+
+	cmd := exec.Command(arg0, arg1, arg2, arg3, arg6, arg7)
+	//fmt.Println(cmd.String())
+
+	errCmd := cmd.Run()
+
+	if errCmd != nil {
+		fmt.Println(errCmd)
+	}
 
 	//err = cmd.Wait()
 
@@ -106,7 +131,7 @@ func main() {
 	channel <- 2
 	channel <- 3
 
-	var wg, wgJava, wgCopy sync.WaitGroup
+	var wg, wgJava, wgCopy, wgClear sync.WaitGroup
 
 	//read images
 	files, err := ioutil.ReadDir("./masterInput")
@@ -154,26 +179,43 @@ func main() {
 			break
 		}
 	}
+	fmt.Println("Aguardando término de processamento ...")
 	wgJava.Wait()
-
-	channelCopy := make(chan int)
-	channelCopy <- 1
+	fmt.Printf("Numero de goroutines: %d\n", runtime.NumGoroutine())
 
 	//executar workerCopy.jar em cada Worker
-	for j := 1; j <= 3; j++ {
+	i := 1
+	for {
 		wgCopy.Add(1)
-		fmt.Println("Aguardando término de processamento ...")
-		i := <-channelJava
-		copyOk := <-channelCopy
+
 		dest := "172.42.42.10" + strconv.Itoa(i)
 
 		fmt.Printf("Copiando arquivos de worker%d\n\n", i)
-		if copyOk == 1 {
-			go workerCopy(dest, &wgCopy, channelCopy)
-		}
+		go workerCopy(dest, &wgCopy)
 
+		wgCopy.Wait()
+		i++
+		if i == 4 {
+			break
+		}
 	}
-	wgCopy.Wait()
+
+	//executar clearWorker.sh em cada Worker
+	i = 1
+	for {
+		wgClear.Add(1)
+
+		dest := "172.42.42.10" + strconv.Itoa(i)
+
+		fmt.Printf("Limpando arquivos de worker%d\n\n", i)
+		go clearWorker(dest, &wgClear)
+
+		wgClear.Wait()
+		i++
+		if i == 4 {
+			break
+		}
+	}
 
 	fmt.Println("Finalizado!")
 }

@@ -24,6 +24,7 @@ Vagrant.configure(2) do |config|
       workernode.vm.provision "file", source: "workerCopy.jar", destination: "/home/vagrant/workerCopy.jar"
       workernode.vm.provision "file", source: "executeWorkerApp.sh", destination: "/home/vagrant/executeWorkerApp.sh"
       workernode.vm.provision "file", source: "executeWorkerCopy.sh", destination: "/home/vagrant/executeWorkerCopy.sh"
+      workernode.vm.provision "file", source: "clearWorker.sh", destination: "/home/vagrant/clearWorker.sh"
       workernode.vm.provision "shell", path: "worker.sh"
     end
   end
