@@ -7,7 +7,11 @@ $sudo apt-get install virtualbox
 $sudo apt-get install vagrant
 
 
-<b>Executar CADPI:</b>
+<b>Abra um terminal na pasta do projeto</b>
+
+$mkdir masterInput masterOutput
+
+$cp -R <base de imagens>/* ./masterInput
 
 $vagrant up
 
