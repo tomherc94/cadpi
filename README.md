@@ -1,5 +1,8 @@
 <h1>Cluster de Alto Desempenho para Processamento de Imagens (CADPI)</h1>
 
+<p>Faça o clone do projeto<br>
+$git clone https://github.com/tomherc94/cadpi.git</p>
+
 <p>Instalar dependências:<br>
 $sudo apt-get install virtualbox<br>
 $sudo apt-get install vagrant</p>
