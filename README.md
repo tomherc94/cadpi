@@ -9,7 +9,7 @@ $sudo apt-get install vagrant</p>
 $mkdir masterInput masterOutput</p>
 
 <p>Copie as imagens para a pasta masterInput<br>
-$cp -R <base de imagens>/* ./masterInput</p>
+$cp -R "suasImagens"/* ./masterInput</p>
 
 <p>Suba as máquinas virtuais (VMs)<br>
 $vagrant up</p>
