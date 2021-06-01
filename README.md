@@ -19,3 +19,5 @@ $vagrant ssh master</p>
 
 <p>Execute o algoritmo para processar as imagens em cluster<br>
 $go run master.go</p>
+
+<p>Ao final do processamento as imagens modificadas estarão em masterOutput</p>
