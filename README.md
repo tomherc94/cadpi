@@ -5,17 +5,17 @@ $sudo apt-get install virtualbox<br>
 $sudo apt-get install vagrant</p>
 
 
-<p>Abra um terminal na pasta do projeto</p>
-$mkdir masterInput masterOutput
+<p>Abra um terminal na pasta do projeto<br>
+$mkdir masterInput masterOutput</p>
 
-<p>Copie as imagens para a pasta masterInput</p>
-$cp -R <base de imagens>/* ./masterInput
+<p>Copie as imagens para a pasta masterInput<br>
+$cp -R <base de imagens>/* ./masterInput</p>
 
-<p>Suba as máquinas virtuais (VMs)</p>
-$vagrant up
+<p>Suba as máquinas virtuais (VMs)<br>
+$vagrant up</p>
 
-<p>Acesse a VM master</p>
-$vagrant ssh master
+<p>Acesse a VM master<br>
+$vagrant ssh master</p>
 
-<p>Execute o algoritmo para processar as imagens em cluster</p>
-$go run master.go
+<p>Execute o algoritmo para processar as imagens em cluster<br>
+$go run master.go</p>
