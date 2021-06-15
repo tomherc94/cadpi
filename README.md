@@ -1,5 +1,8 @@
 <h1>Cluster de Alto Desempenho para Processamento de Imagens (CADPI)</h1>
 
+<p><b>Requisitos mínimos:</b><br>
+8GB de RAM e processador com 6 núcleos.</p>
+
 <p><b>Faça o clone do projeto</b><br>
 $git clone https://github.com/tomherc94/cadpi.git</p>
 
