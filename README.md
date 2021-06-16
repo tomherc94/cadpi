@@ -1,5 +1,7 @@
 <h1>Cluster de Alto Desempenho para Processamento de Imagens (CADPI)</h1>
 
+<p><b>Vídeo:</b> https://youtu.be/bpgFuUg8L-s</p>
+
 <p><b>Requisitos mínimos:</b><br>
 8GB de RAM e processador com 6 núcleos.</p>
 
